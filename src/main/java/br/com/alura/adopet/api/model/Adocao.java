@@ -61,6 +61,7 @@ public class Adocao {
         this.data = data;
     }
 
+
     public Tutor getTutor() {
         return tutor;
     }
