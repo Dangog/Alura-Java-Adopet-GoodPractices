@@ -22,7 +22,7 @@ public class ValidacaoTutorComAdocaoEmAndamento implements ValidacaoSolicitacaoA
     private TutorRepository tutorRepository;
 
     public void validar(SolicitacaoAdocaodto solicitacaoAdocaodto) {
-        if (adocaoRepository.existsByPetIdAndStatus(solicitacaoAdocaodto.idPet(), StatusAdocao.AGUARDANDO_AVALIACAO)) ;
+        if (adocaoRepository.existsByTutorIdAndStatus(solicitacaoAdocaodto.idTutor(), StatusAdocao.AGUARDANDO_AVALIACAO)) ;
         throw new ValidacaoException("Tutor já possui outra adoção aguardando avaliação!");
     }
 
