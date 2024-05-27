@@ -3,7 +3,6 @@ package br.com.alura.adopet.api.service;
 import br.com.alura.adopet.api.dto.AprovarAdocaodto;
 import br.com.alura.adopet.api.dto.ReprovarAdocaodto;
 import br.com.alura.adopet.api.dto.SolicitacaoAdocaodto;
-import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Adocao;
 import br.com.alura.adopet.api.model.StatusAdocao;
 import br.com.alura.adopet.api.model.Pet;
@@ -11,13 +10,9 @@ import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.repository.AdocaoRepository;
 import br.com.alura.adopet.api.repository.PetRepository;
 import br.com.alura.adopet.api.repository.TutorRepository;
-import br.com.alura.adopet.api.validations.ValidacaoSolicitacaoAdocao;
+import br.com.alura.adopet.api.validations.validacaosolicitacaoadocao.ValidacaoSolicitacaoAdocao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -45,12 +40,7 @@ public class AdocaoService {
 
         validacaoSolicitacaoAdocaoList.forEach(v -> v.validar(solicitacaoAdocaodto));
         
-        Adocao adocao = new Adocao();
-        adocao.setData(LocalDateTime.now());
-        adocao.setStatus(StatusAdocao.AGUARDANDO_AVALIACAO);
-        adocao.setPet(pet);
-        adocao.setTutor(tutor);
-        adocao.setMotivo(solicitacaoAdocaodto.motivo());
+        Adocao adocao = new Adocao(tutor,pet, solicitacaoAdocaodto.motivo());
         adocaoRepository.save(adocao);
 
         emailService.enviarEmail(adocao.getPet().getAbrigo().getEmail(),

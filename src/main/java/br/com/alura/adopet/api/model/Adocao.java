@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.model;
 
+import br.com.alura.adopet.api.dto.ReprovarAdocaodto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -40,6 +41,25 @@ public class Adocao {
         return Objects.equals(id, adocao.id);
     }
 
+    public Adocao(Tutor tutor, Pet pet, String motivo) {
+        this.tutor = tutor;
+        this.pet = pet;
+        this.motivo = motivo;
+        this.data = LocalDateTime.now();
+        this.status = StatusAdocao.AGUARDANDO_AVALIACAO;
+    }
+
+    public Adocao (){}
+
+    public void marcarComoAprovado(){
+        this.status = StatusAdocao.APROVADO;
+    }
+
+    public void marcarComoReprovada(ReprovarAdocaodto reprovarAdocaodto){
+        this.status = StatusAdocao.REPROVADO;
+        this.justificativaStatus = reprovarAdocaodto.justificativa();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -48,8 +68,6 @@ public class Adocao {
     public Long getId() {
         return id;
     }
-
-
 
     public void setId(Long id) {
         this.id = id;
