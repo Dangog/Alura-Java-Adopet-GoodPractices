@@ -40,10 +40,18 @@ public class AbrigoController {
     @GetMapping("/{idOuNome}/pets")
     public ResponseEntity<List<Pet>> listarPets(@PathVariable String idOuNome) {
         try {
-            List<Pet> pets = abrigoService.listar(idOuNome);
+            Long id = Long.parseLong(idOuNome);
+            List<Pet> pets = repository.getReferenceById(id).getPets();
             return ResponseEntity.ok(pets);
-        } catch (Exception e){
+        } catch (EntityNotFoundException enfe) {
             return ResponseEntity.notFound().build();
+        } catch (NumberFormatException e) {
+            try {
+                List<Pet> pets = repository.findByNome(idOuNome).getPets();
+                return ResponseEntity.ok(pets);
+            } catch (EntityNotFoundException enfe) {
+                return ResponseEntity.notFound().build();
+            }
         }
     }
 
