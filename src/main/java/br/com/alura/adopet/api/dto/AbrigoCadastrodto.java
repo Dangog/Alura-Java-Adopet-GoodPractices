@@ -1,4 +1,6 @@
 package br.com.alura.adopet.api.dto;
 
-public record AbrigoCadastrodto(String nome, String telefone, String email) {
+import jakarta.validation.constraints.NotNull;
+
+public record AbrigoCadastrodto(@NotNull String nome, @NotNull String telefone, @NotNull String email) {
 }
