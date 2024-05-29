@@ -25,6 +25,12 @@ public class Tutor {
     @OneToMany(mappedBy = "tutor")
     private List<Adocao> adocoes;
 
+    public Tutor(String nome, String email, String telefone) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

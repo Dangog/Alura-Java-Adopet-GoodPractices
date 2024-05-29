@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.service;
 
+import br.com.alura.adopet.api.dto.CadastroPetdto;
 import br.com.alura.adopet.api.dto.Petdto;
 import br.com.alura.adopet.api.model.Abrigo;
 import br.com.alura.adopet.api.model.Pet;
@@ -20,6 +21,10 @@ public class PetService {
                 .stream()
                 .map(Petdto::new)
                 .toList();
+    }
+
+    public void cadastrarPet(Abrigo abrigo, CadastroPetdto dto) {
+        repository.save(new Pet(dto, abrigo));
     }
 
 }

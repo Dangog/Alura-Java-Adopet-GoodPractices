@@ -7,9 +7,11 @@ import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Abrigo;
 import br.com.alura.adopet.api.model.Pet;
 import br.com.alura.adopet.api.repository.AbrigoRepository;
+import br.com.alura.adopet.api.repository.PetRepository;
 import br.com.alura.adopet.api.validations.validacaoabrigo.ValidacaoAbrigo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,10 +22,12 @@ public class AbrigoService {
     private AbrigoRepository repository;
 
     @Autowired
+    private PetRepository petRepository;
+
+    @Autowired
     private List<ValidacaoAbrigo> validacaoAbrigoList;
 
     public void cadastrar(AbrigoCadastrodto dto) {
-
         validacaoAbrigoList.forEach(v -> v.validar(dto));
 
         Abrigo abrigo = new Abrigo(dto.nome(), dto.telefone(), dto.email());

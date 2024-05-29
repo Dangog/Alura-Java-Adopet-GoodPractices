@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.model;
 
+import br.com.alura.adopet.api.dto.CadastroPetdto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +38,9 @@ public class Pet {
     private Adocao adocao;
 
     public Pet(){}
+
+    public Pet(CadastroPetdto dto, Abrigo abrigo) {
+    }
 
     @Override
     public boolean equals(Object o) {
