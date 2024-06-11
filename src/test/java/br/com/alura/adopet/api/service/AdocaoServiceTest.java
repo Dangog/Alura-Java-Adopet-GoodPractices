@@ -11,11 +11,9 @@ import br.com.alura.adopet.api.repository.TutorRepository;
 import br.com.alura.adopet.api.validacoes.ValidacaoSolicitacaoAdocao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +38,14 @@ class AdocaoServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Spy
+    private List<ValidacaoSolicitacaoAdocao> validacoes = new ArrayList<>();
+
     @Mock
-    private List<ValidacaoSolicitacaoAdocao> validacoes;
+    private ValidacaoSolicitacaoAdocao validador1;
+
+    @Mock
+    private ValidacaoSolicitacaoAdocao validador2;
 
     @Mock
     private Pet pet;
@@ -55,24 +59,44 @@ class AdocaoServiceTest {
     private SolicitacaoAdocaoDto dto;
 
     @Captor
-    private ArgumentCaptor<Adocao> adocaoArgumentCaptor;
+    private ArgumentCaptor<Adocao> adocaoCaptor;
 
     @Test
-    void deverisaSalvarAdocaoAoSolicitar() {
-        //Arrange
-        this.dto = new SolicitacaoAdocaoDto(10l,20l,"Nao ha");
+    void deveriaSalvarAdocaoAoSolicitar() {
+        //ARRANGE
+        this.dto = new SolicitacaoAdocaoDto(10l, 20l, "motivo qualquer");
         given(petRepository.getReferenceById(dto.idPet())).willReturn(pet);
         given(tutorRepository.getReferenceById(dto.idTutor())).willReturn(tutor);
         given(pet.getAbrigo()).willReturn(abrigo);
 
-        //Act
+        //ACT
         service.solicitar(dto);
 
-        //Assert
-        then(repository).should().save(adocaoArgumentCaptor.capture());
-        Adocao adocaoSalva = adocaoArgumentCaptor.getValue();
-        Assertions.assertEquals(pet,adocaoSalva.getPet());
-        Assertions.assertEquals(tutor,adocaoSalva.getTutor());
-        Assertions.assertEquals(dto.motivo(),adocaoSalva.getMotivo());
+        //ASSERT
+        then(repository).should().save(adocaoCaptor.capture());
+        Adocao adocaoSalva = adocaoCaptor.getValue();
+        Assertions.assertEquals(pet, adocaoSalva.getPet());
+        Assertions.assertEquals(tutor, adocaoSalva.getTutor());
+        Assertions.assertEquals(dto.motivo(), adocaoSalva.getMotivo());
     }
+
+
+    @Test
+    void deveriaChamarValidadoresDeAdocaoAoSolicitar() {
+        //ARRANGE
+        this.dto = new SolicitacaoAdocaoDto(10l, 20l, "motivo qualquer");
+        given(petRepository.getReferenceById(dto.idPet())).willReturn(pet);
+        given(tutorRepository.getReferenceById(dto.idTutor())).willReturn(tutor);
+        given(pet.getAbrigo()).willReturn(abrigo);
+        validacoes.add(validador1);
+        validacoes.add(validador2);
+
+        //ACT
+        service.solicitar(dto);
+
+        //ASSERT
+        BDDMockito.then(validador1).should().validar(dto);
+        BDDMockito.then(validador2).should().validar(dto);
+    }
+
 }
